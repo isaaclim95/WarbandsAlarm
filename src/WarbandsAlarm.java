@@ -38,7 +38,7 @@ public class WarbandsAlarm {
         int curDayOfMonth = curDateTime.getDayOfMonth();
 
         try {
-            File file = new File("src/warbands.txt");
+            File file = new File("warbands.txt");
             Scanner reader = new Scanner(file);
             while(reader.hasNextLine()) {
                 lines.add(reader.nextLine());

@@ -125,7 +125,7 @@ public class WarbandsAlarm {
     public void runDaemon()  {
 
         Hashtable<DayOfWeek, ArrayList<Long>> dayToEpochMillis = processFile("src/warbands.txt");
-//        scheduleNextNotification(MINUTES_BEFORE_CAMP_START_NOTIFY, dayToEpochMillis);
+        scheduleNextNotification(MINUTES_BEFORE_CAMP_START_NOTIFY, dayToEpochMillis);
 
     }
 
@@ -141,6 +141,7 @@ public class WarbandsAlarm {
 
                     System.out.println("Inside : " + Thread.currentThread().getName());
                     System.out.println("Warbands is starting now");
+                    WarbandsAlarm.this.notify(10);
 
                 }
 

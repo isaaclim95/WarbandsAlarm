@@ -24,19 +24,23 @@ public class WarbandsNotifier {
 
         JFrame frame = new JFrame();//creating instance of JFrame
 
-
-
         // Components
+        JLabel timeTitle = new JLabel("Warbands Notifier");
+        timeTitle.setBounds(100, 0, 900, 300);
+        timeTitle.setFont(new Font("Serif", Font.BOLD, 30));
+        timeTitle.setForeground(Color.white);
+
         JLabel timeLabel = new JLabel("test");
-        timeLabel.setBounds(0, 0, 900, 300);
-        timeLabel.setFont(new Font("Serif", Font.BOLD, 36));
+        timeLabel.setBounds(100, 100, 900, 300);
+        timeLabel.setFont(new Font("SansSerif", Font.PLAIN, 22));
         timeLabel.setForeground(Color.white);
 
         // Adding components to frame
+        frame.add(timeTitle);
         frame.add(timeLabel);
 
         // Setting frame options
-        frame.setSize(1000,500);
+        frame.setSize(500,500);
         frame.setLayout(null); //using no layout managers
         frame.setVisible(true); //making the frame visible
         frame.setResizable(false);
@@ -53,7 +57,7 @@ public class WarbandsNotifier {
                         long timeTillNextCamp = wba.getTimeTillNextCamp();
 
                         if(campStatus == WarbandsAlarm.CampStatus.INACTIVE || campStatus == WarbandsAlarm.CampStatus.STARTING)   {
-                            timeLabel.setText("Warbands starts in " + String.format("%02d:%02d:%02d",
+                            timeLabel.setText(String.format("%02dh %02dm %02ds",
                                     TimeUnit.MILLISECONDS.toHours(timeTillNextCamp),
                                     TimeUnit.MILLISECONDS.toMinutes(timeTillNextCamp) -
                                             TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeTillNextCamp)), // The change is in this line

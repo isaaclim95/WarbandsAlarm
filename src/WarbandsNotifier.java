@@ -101,6 +101,7 @@ public class WarbandsNotifier {
                         jPopupMenu.setVisible(true);
                     } else if(e.getButton() == 1)   {
                         frame.setVisible(true);
+                        frame.setState(Frame.NORMAL);
                     }
                 }
             });

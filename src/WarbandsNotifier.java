@@ -99,6 +99,8 @@ public class WarbandsNotifier {
                         jPopupMenu.setInvoker(jPopupMenu);
                         jPopupMenu.setAlignmentX(100);
                         jPopupMenu.setVisible(true);
+                    } else if(e.getButton() == 1)   {
+                        frame.setVisible(true);
                     }
                 }
             });

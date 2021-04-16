@@ -1,8 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.concurrent.TimeUnit;
 
 public class WarbandsNotifier {
+
+    private static TrayIcon trayIcon;
+
     public static void main(String[] args) {
 
         WarbandsAlarm wba = new WarbandsAlarm();
@@ -45,6 +52,63 @@ public class WarbandsNotifier {
         frame.setVisible(true); //making the frame visible
         frame.setResizable(false);
         frame.getContentPane().setBackground(Color.DARK_GRAY);
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+
+
+        if (SystemTray.isSupported()) {
+
+            SystemTray tray = SystemTray.getSystemTray();
+            Image image = Toolkit.getDefaultToolkit().createImage("src/icon.png");
+            trayIcon = new TrayIcon(image, "Warbands Notifier");
+            trayIcon.setImageAutoSize(true);
+
+
+            MenuItem exitMenuItem = new MenuItem("Exit warbands notifier");
+            exitMenuItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("exit");
+                    frame.dispose();
+                    System.exit(0);
+                }
+            });
+
+            JPopupMenu jPopupMenu = new JPopupMenu();
+
+            PopupMenu popupMenu = new PopupMenu();
+            popupMenu.add(exitMenuItem);
+            trayIcon.setPopupMenu(popupMenu);
+
+
+
+            trayIcon.addMouseListener(new MouseAdapter() {
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    maybeShowPopup(e);
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    maybeShowPopup(e);
+                }
+
+                private void maybeShowPopup(MouseEvent e) {
+                    if (e.isPopupTrigger()) {
+                        jPopupMenu.setLocation(e.getX(), e.getY());
+                        jPopupMenu.setInvoker(jPopupMenu);
+                        jPopupMenu.setAlignmentX(100);
+                        jPopupMenu.setVisible(true);
+                    }
+                }
+            });
+
+            try {
+                tray.add(trayIcon);
+            } catch (AWTException e) {
+                System.err.println(e);
+            }
+        }
 
         Runnable constantlyUpdateTime = new Runnable() {
             @Override
@@ -57,14 +121,22 @@ public class WarbandsNotifier {
                         long timeTillNextCamp = wba.getTimeTillNextCamp();
 
                         if(campStatus == WarbandsAlarm.CampStatus.INACTIVE || campStatus == WarbandsAlarm.CampStatus.STARTING)   {
-                            timeLabel.setText(String.format("%02dh %02dm %02ds",
+
+                            String timeText = String.format("%02dh %02dm %02ds",
                                     TimeUnit.MILLISECONDS.toHours(timeTillNextCamp),
                                     TimeUnit.MILLISECONDS.toMinutes(timeTillNextCamp) -
                                             TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeTillNextCamp)), // The change is in this line
                                     TimeUnit.MILLISECONDS.toSeconds(timeTillNextCamp) -
-                                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeTillNextCamp))));
+                                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeTillNextCamp)));
+
+                            trayIcon.setToolTip("Warbands starts in: " + timeText);
+                            timeLabel.setText(timeText);
+
                         } else if(campStatus == WarbandsAlarm.CampStatus.STARTED)   {
+
+                            trayIcon.setToolTip("Warbands has started!");
                             timeLabel.setText("Warbands has started!");
+
                         }
 
                         Thread.sleep(1000L);
@@ -78,7 +150,6 @@ public class WarbandsNotifier {
 
 
         try {
-            System.out.println("Starting Thread...");
             Thread thread2 = new Thread(constantlyUpdateTime);
             thread2.start();
             thread2.join();

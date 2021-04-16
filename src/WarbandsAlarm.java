@@ -49,24 +49,19 @@ public class WarbandsAlarm {
         if(nextOrCurrentCampTime - currentEpochTimeMillis > 0)  {
             // Check if less than 10 minutes till spawn - CampStatus.STARTING
             if(nextOrCurrentCampTime - currentEpochTimeMillis < MINUTES_BEFORE_CAMP_START_NOTIFY * 60 * 1000)   {
-                System.out.println("CampStatus.STARTING");
                 return CampStatus.STARTING;
             // Camp spawns more than 10 minutes away - CampStatus.STARTING
             } else  {
-                System.out.println(nextOrCurrentCampTime - currentEpochTimeMillis);
-                System.out.println("CampStatus.INACTIVE1");
                 return CampStatus.INACTIVE;
             }
         // It's in the past
         } else  {
             // Camp has started less than 10 minutes ago
             if(currentEpochTimeMillis - nextOrCurrentCampTime < MINUTES_BEFORE_CAMP_START_NOTIFY * 60 * 1000)   {
-                System.out.println("CampStatus.STARTED");
                 return CampStatus.STARTED;
             }
         }
         // Camp spawns in more than 10 minutes
-        System.out.println("CampStatus.INACTIVE2");
         return CampStatus.INACTIVE;
     }
 
@@ -105,7 +100,6 @@ public class WarbandsAlarm {
                 }
 
             }
-            System.out.println("getNextOrCurrentCampTime(): " + Instant.ofEpochMilli(nextOrCurrentCampTime).atZone(ZoneId.systemDefault()).toLocalDateTime());
             return nextOrCurrentCampTime;
         }
 
@@ -138,26 +132,16 @@ public class WarbandsAlarm {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-
-                    System.out.println("Inside : " + Thread.currentThread().getName());
                     System.out.println("Warbands is starting now");
                     WarbandsAlarm.this.notify(10);
-
                 }
-
 
             };
 
             long nextCampTimeBuffer = nextCampTime - Integer.toUnsignedLong(minutesBeforeCampStartNotify) * 60 * 1000;
-            System.out.println(
-                    "Current time: " + LocalDateTime.now() +
-                            "\t nextCampTimeBuffer: " +
-                            Instant.ofEpochMilli(nextCampTimeBuffer).atZone(ZoneId.systemDefault()).toLocalDateTime());
-
 
             scheduledExecutorService.schedule(runnable,  nextCampTimeBuffer - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
             try {
-                // 15 minutes timeout
                 scheduledExecutorService.shutdown();
                 scheduledExecutorService.awaitTermination(27000000, TimeUnit.MILLISECONDS);
                 System.out.println("Tasks finished");

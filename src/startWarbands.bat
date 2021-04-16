@@ -1,1 +1,1 @@
-start javaw -cp WarbandsAlarm.jar WarbandsAlarm
+start javaw WarbandsNotifier

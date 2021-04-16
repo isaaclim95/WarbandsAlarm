@@ -58,7 +58,7 @@ public class WarbandsNotifier {
         if (SystemTray.isSupported()) {
 
             SystemTray tray = SystemTray.getSystemTray();
-            Image image = Toolkit.getDefaultToolkit().createImage("src/icon.png");
+            Image image = Toolkit.getDefaultToolkit().createImage("icon.png");
             trayIcon = new TrayIcon(image, "Warbands Notifier");
             trayIcon.setImageAutoSize(true);
 

@@ -34,7 +34,7 @@ public class WarbandsAlarm {
     // Constructor - Sets everything up
     WarbandsAlarm()    {
 
-        dayToEpochMillis = processFile("src/warbands.txt");
+        dayToEpochMillis = processFile("warbands.txt");
 
     }
 
@@ -118,7 +118,6 @@ public class WarbandsAlarm {
      */
     public void runDaemon()  {
 
-        Hashtable<DayOfWeek, ArrayList<Long>> dayToEpochMillis = processFile("src/warbands.txt");
         scheduleNextNotification(MINUTES_BEFORE_CAMP_START_NOTIFY, dayToEpochMillis);
 
     }
